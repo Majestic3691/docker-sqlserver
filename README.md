@@ -1,9 +1,10 @@
 # docker-sqlserver
 This is the procedure for creating a new docker machine, load a sql server container and connect/verify the installation.
 
-__NOTE: Powershell ISE cannot connect to containers use non-ISE Powershell session__
+__NOTE: Powershell ISE may have [issues](https://github.com/docker/for-win/issues/223) connecting to containers__
+__*USE non-ISE Powershell session*__
 
-SQL Server 2017 (Linux)- requirements
+SQL Server 2017 (Linux)- [requirements]
 (https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup#system)
 Cores - 2 (2 GHz)
 Disk - 6 GB min
@@ -64,6 +65,7 @@ $Env:COMPOSE_CONVERT_WINDOWS_PATHS = "true"
 & "C:\Program Files\Docker\Docker\Resources\bin\docker-machine.exe" env sqldbVM | Invoke-Expression
 ```
 
+### Docker inspect container
 ```
  PS C:\projects\aws\github\sqlserver> docker-machine inspect sqldbVM
 {
@@ -79,7 +81,7 @@ $Env:COMPOSE_CONVERT_WINDOWS_PATHS = "true"
         "SwarmHost": "tcp://0.0.0.0:3376",
         "SwarmDiscovery": "",
         "Boot2DockerURL": "",
-        "VSwitch": "Majestic LAN Virtual Switch",
+        "VSwitch": "Your LAN Virtual Switch",
         "DiskSize": 20,
         "MemSize": 4096,
         "CPU": 2,
@@ -192,14 +194,14 @@ CONTAINER ID        IMAGE                                      COMMAND          
 834402886b5f        microsoft/mssql-server-linux:2017-latest   "/bin/sh -c /opt/mssâ€¦"   About a minute ago   Up About a minute   0.0.0.0:1401->1433/tcp   sql1
 ```
 
-#### Changes the internal name of the container to a custom value
+### Changes the internal name of the container to a custom value
 ```
 SELECT @@SERVERNAME,
     SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),
     SERVERPROPERTY('MachineName'),
     SERVERPROPERTY('ServerName')
 ```
-(https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker)
+[Docker SQLServer on Linux Quickstart](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker)
 
 ### Connect to sql server
 ```
@@ -213,7 +215,7 @@ root@834402886b5f:/#
 ```
 
 ### Connect from outside the container
-__Port 1401 is the port mapped from container to the outside - inside container 1403 - outside container 1401__
+__*NOTE: Port 1401 is the port mapped from container to the outside - inside container 1403 - outside container 1401*__
 ```
 C:\Users\Michael> sqlcmd -S 192.168.1.196,1401 -U SA -P 'pwd'
 1> select name from sys.Databases
@@ -238,7 +240,7 @@ docker exec -it sql1 /opt/mssql-tools/bin/sqlcmd `
 
 ### Create a test db
 ```
-root@834402886b5f:/# /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'hpy6DX6B'
+root@834402886b5f:/# /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'pwd'
 1> Create Database TestDB
 2> select name from sys.Databases
 3> go
@@ -255,4 +257,4 @@ TestDB
 
 ##### [INSTALL AND CONFIGURE](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker)
 
-##### [TROUBLESHOOTING] (https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-configure-docker#troubleshooting)
+##### [TROUBLESHOOTING](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-configure-docker#troubleshooting)
