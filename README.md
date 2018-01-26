@@ -1,18 +1,70 @@
 # docker-sqlserver
+This is the procedure for creating a new docker machine, load a sql server container and connect/verify the installation.
 
 __NOTE: Powershell ISE cannot connect to containers use non-ISE Powershell session__
 
+SQL Server 2017 (Linux)- requirements
+(https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup#system)
+Cores - 2 (2 GHz)
+Disk - 6 GB min
+Memory - 2GB min
+
+#### Create new machine - format
+```
+$ docker-machine create -d hyperv --hyperv-virtual-switch "Your LAN Virtual Switch" --hyperv-disk-size <mb> --hyperv-memory <mb> --hyperv-cpu-count 2 sqldbVM
+```
+
+### Create a docker machine for SQL Server
+```
+ PS C:\projects\aws\github\sqlserver> docker-machine create -d hyperv --hyperv-virtual-switch "Your LAN Virtual Switch" --hyperv-disk-size 20000 --hyperv-memory 4096 --hyperv-cpu-count 2 sqldbVM
+Running pre-create checks...
+Creating machine...
+(sqldbVM) Copying C:\Users\Michael\.docker\machine\cache\boot2docker.iso to C:\Users\Michael\.docker\machine\machines\sqldbVM\boot2docker.iso...
+(sqldbVM) Creating SSH key...
+(sqldbVM) Creating VM...
+(sqldbVM) Using switch "Your LAN Virtual Switch"
+(sqldbVM) Creating VHD
+(sqldbVM) Starting VM...
+(sqldbVM) Waiting for host to start...
+Waiting for machine to be running, this may take a few minutes...
+Detecting operating system of created instance...
+Waiting for SSH to be available...
+Detecting the provisioner...
+Provisioning with boot2docker...
+Copying certs to the local machine directory...
+Copying certs to the remote machine...
+Setting Docker configuration on the remote daemon...
+Checking connection to Docker...
+Docker is up and running!
+To see how to connect your Docker Client to the Docker Engine running on this virtual machine, run: C:\Program Files\Docker\Docker\Resources\bin\docker-machine.exe env sql
+dbVM
+```
+
+### Remove a docker machine
+```
+PS C:\projects\aws\github\sqlserver> docker-machine rm sqldbVM -y -f
+About to remove sqldbVM
+WARNING: This action will delete both local reference and remote instance.
+Successfully removed sqldbVM
+PS C:\projects\aws\github\sqlserver> docker-machine ls
+NAME        ACTIVE   DRIVER   STATE     URL                        SWARM   DOCKER        ERRORS
+defaultVM   -        hyperv   Running   tcp://192.168.1.188:2376           v17.12.0-ce  
+```
+
+
 ## Set environment for sqldbVM
- PS C:\projects\aws\github\sqlserver> docker-machine env sqldbVM
+```
+PS C:\projects\aws\github\sqlserver> docker-machine env sqldbVM
 $Env:DOCKER_TLS_VERIFY = "1"
 $Env:DOCKER_HOST = "tcp://192.168.1.195:2376"
 $Env:DOCKER_CERT_PATH = "C:\Users\Michael\.docker\machine\machines\sqldbVM"
 $Env:DOCKER_MACHINE_NAME = "sqldbVM"
 $Env:COMPOSE_CONVERT_WINDOWS_PATHS = "true"
 # Run this command to configure your shell:
-# & "C:\Program Files\Docker\Docker\Resources\bin\docker-machine.exe" env sqldbVM | Invoke-Expression
- 
+& "C:\Program Files\Docker\Docker\Resources\bin\docker-machine.exe" env sqldbVM | Invoke-Expression
+```
 
+```
  PS C:\projects\aws\github\sqlserver> docker-machine inspect sqldbVM
 {
     "ConfigVersion": 3,
@@ -87,14 +139,16 @@ $Env:COMPOSE_CONVERT_WINDOWS_PATHS = "true"
     },
     "Name": "sqldbVM"
 }
- 
- 
-Container -connect to bash shell
-PS docker container exec -t -i 7cc69388ef9e /bin/bash
+```
 
+### Container -connect to bash shell
+```
+docker container exec -t -i 7cc69388ef9e /bin/bash
+```
 
-Set environment for the machine
-PS C:\projects\aws\github\sqlserver> docker-machine env sqldbVM
+### Set environment for the machine
+```
+C:\projects\aws\github\sqlserver> docker-machine env sqldbVM
 $Env:DOCKER_TLS_VERIFY = "1"
 $Env:DOCKER_HOST = "tcp://192.168.1.196:2376"
 $Env:DOCKER_CERT_PATH = "C:\Users\Michael\.docker\machine\machines\sqldbVM"
@@ -102,93 +156,66 @@ $Env:DOCKER_MACHINE_NAME = "sqldbVM"
 $Env:COMPOSE_CONVERT_WINDOWS_PATHS = "true"
 # Run this command to configure your shell:
 # & "C:\Program Files\Docker\Docker\Resources\bin\docker-machine.exe" env sqldbVM | Invoke-Expression
+```
 
+### Execute environment setting command
+```
  PS C:\projects\aws\github\sqlserver> & "C:\Program Files\Docker\Docker\Resources\bin\docker-machine.exe" env sqldbVM | Invoke-Expression
+```
 
-Install sql server 2017 container
- PS C:\projects\aws\github\sqlserver> docker pull microsoft/mssql-server-linux:2017-latest
+### Install sql server 2017 container
+```
+C:\projects\aws\github\sqlserver> docker pull microsoft/mssql-server-linux:2017-latest
 2017-latest: Pulling from microsoft/mssql-server-linux
 f6fa9a861b90: Pulling fs layer
 da7318603015: Pulling fs layer
 6a8bd10c9278: Pulling fs layer
-d5a40291440f: Pulling fs layer
-bbdd8a83c0f1: Pulling fs layer
-3a52205d40a6: Pulling fs layer
-6192691706e8: Pulling fs layer
-1a658a9035fb: Pulling fs layer
-827975ce0c02: Pulling fs layer
-ea7199b7fbb6: Pulling fs layer
-d5a40291440f: Waiting
-bbdd8a83c0f1: Waiting
-3a52205d40a6: Waiting
-6192691706e8: Waiting
-ea7199b7fbb6: Waiting
-1a658a9035fb: Waiting
-827975ce0c02: Waiting
-da7318603015: Verifying Checksum
-da7318603015: Download complete
-6a8bd10c9278: Verifying Checksum
-6a8bd10c9278: Download complete
-bbdd8a83c0f1: Verifying Checksum
-bbdd8a83c0f1: Download complete
-d5a40291440f: Download complete
-3a52205d40a6: Verifying Checksum
-3a52205d40a6: Download complete
-1a658a9035fb: Verifying Checksum
-1a658a9035fb: Download complete
-6192691706e8: Verifying Checksum
-6192691706e8: Download complete
-f6fa9a861b90: Download complete
-f6fa9a861b90: Pull complete
-da7318603015: Pull complete
-6a8bd10c9278: Pull complete
-d5a40291440f: Pull complete
-bbdd8a83c0f1: Pull complete
-3a52205d40a6: Pull complete
-6192691706e8: Pull complete
-1a658a9035fb: Pull complete
-ea7199b7fbb6: Verifying Checksum
-ea7199b7fbb6: Download complete
-827975ce0c02: Verifying Checksum
-827975ce0c02: Download complete
-827975ce0c02: Pull complete
+...
 ea7199b7fbb6: Pull complete
 Digest: sha256:fa1265cae3447320542cd0d1da160988aeffe5d2ae602a84336ddbd069e2b4ee
 Status: Downloaded newer image for microsoft/mssql-server-linux:2017-latest
+```
 
-Start the container image
- PS C:\projects\aws\github\sqlserver> docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=hpy6DX6B" `
+### Start the container image
+```
+C:\projects\aws\github\sqlserver> docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=pwd" `
    -p 1401:1433 --name sql1 `
    -d microsoft/mssql-server-linux:2017-latest
 
 834402886b5ff926930fa467485acbae131eb1b538b25ff798002b985422a1a4
+```
 
-Verify container execution
- PS C:\projects\aws\github\sqlserver> docker ps -a
+### Verify container execution
+```
+C:\projects\aws\github\sqlserver> docker ps -a
 CONTAINER ID        IMAGE                                      COMMAND                  CREATED              STATUS              PORTS                    NAMES
 834402886b5f        microsoft/mssql-server-linux:2017-latest   "/bin/sh -c /opt/mssâ€¦"   About a minute ago   Up About a minute   0.0.0.0:1401->1433/tcp   sql1
- 
+```
 
-Changes the internal name of the container to a custom value
+#### Changes the internal name of the container to a custom value
+```
 SELECT @@SERVERNAME,
     SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),
     SERVERPROPERTY('MachineName'),
     SERVERPROPERTY('ServerName')
+```
+(https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker)
 
-https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker
-
-Connect to sql server
-PS docker exec -it sql1 "bash"
+### Connect to sql server
+```
+docker exec -it sql1 "bash"
 root@834402886b5f:/#
 
-PS C:\projects\aws\github\sqlserver> docker container exec -t -i 834402886b5f /bin/bash
+OR
+
+C:\projects\aws\github\sqlserver> docker container exec -t -i 834402886b5f /bin/bash
 root@834402886b5f:/#
+```
 
-
-
-Connect from outside the container
-## Port 1401 is the port mapped from container to the outside - inside container 1403 - outside container 1401
-PS C:\Users\Michael> sqlcmd -S 192.168.1.196,1401 -U SA -P 'hpy6DX6B'
+### Connect from outside the container
+__Port 1401 is the port mapped from container to the outside - inside container 1403 - outside container 1401__
+```
+C:\Users\Michael> sqlcmd -S 192.168.1.196,1401 -U SA -P 'pwd'
 1> select name from sys.Databases
 2> go
 name                                                                                                                    
@@ -199,15 +226,18 @@ model
 msdb                                                                                                                    
 TestDB                                                                                                                  
 (5 rows affected)
+```
 
 
-
-Change the SA password
-PS docker exec -it sql1 /opt/mssql-tools/bin/sqlcmd `
+### Change the SA password
+```
+docker exec -it sql1 /opt/mssql-tools/bin/sqlcmd `
    -S localhost -U SA -P "<YourStrong!Passw0rd>" `
    -Q "ALTER LOGIN SA WITH PASSWORD='<YourNewStrong!Passw0rd>'"
+```
 
-Create a test db
+### Create a test db
+```
 root@834402886b5f:/# /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'hpy6DX6B'
 1> Create Database TestDB
 2> select name from sys.Databases
@@ -220,13 +250,9 @@ model
 msdb                                                                                                                    
 TestDB                                                                                                                  
 (5 rows affected)
+```
 
 
+##### [INSTALL AND CONFIGURE](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker)
 
-INSTALL AND CONFIGURE - https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker
-
-TROUBLESHOOTING - https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-configure-docker#troubleshooting
-
-
-
-
+##### [TROUBLESHOOTING] (https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-configure-docker#troubleshooting)
