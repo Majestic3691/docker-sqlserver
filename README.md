@@ -146,11 +146,6 @@ $Env:COMPOSE_CONVERT_WINDOWS_PATHS = "true"
 ```
 ## Install & Configure SQLServer Container
 
-### Container -connect to bash shell
-```
-docker container exec -t -i 7cc69388ef9e /bin/bash
-```
-
 ### Set environment for the machine
 ```
 C:\projects\aws\github\sqlserver> docker-machine env sqldbVM
@@ -205,7 +200,7 @@ SELECT @@SERVERNAME,
     SERVERPROPERTY('ServerName')
 ```
 
-### Connect to sql server
+### Connect to SQLServer container
 ```
 docker exec -it sql1 "bash"
 root@834402886b5f:/#
