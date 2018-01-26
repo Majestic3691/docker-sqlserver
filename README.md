@@ -2,10 +2,10 @@
 This is the procedure for creating a new docker machine, load a sql server container and connect/verify the installation.
 
 __NOTE: Powershell ISE may have [issues](https://github.com/docker/for-win/issues/223) connecting to containers__
+
 __*USE non-ISE Powershell session*__
 
-SQL Server 2017 (Linux)- [requirements]
-(https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup#system)
+SQL Server 2017 (Linux)-  [requirements](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup#system)
 Cores - 2 (2 GHz)
 Disk - 6 GB min
 Memory - 2GB min
@@ -17,7 +17,7 @@ $ docker-machine create -d hyperv --hyperv-virtual-switch "Your LAN Virtual Swit
 
 ### Create a docker machine for SQL Server
 ```
- PS C:\projects\aws\github\sqlserver> docker-machine create -d hyperv --hyperv-virtual-switch "Your LAN Virtual Switch" --hyperv-disk-size 20000 --hyperv-memory 4096 --hyperv-cpu-count 2 sqldbVM
+C:\projects\aws\github\sqlserver> docker-machine create -d hyperv --hyperv-virtual-switch "Your LAN Virtual Switch" --hyperv-disk-size 20000 --hyperv-memory 4096 --hyperv-cpu-count 2 sqldbVM
 Running pre-create checks...
 Creating machine...
 (sqldbVM) Copying C:\Users\Michael\.docker\machine\cache\boot2docker.iso to C:\Users\Michael\.docker\machine\machines\sqldbVM\boot2docker.iso...
@@ -43,11 +43,11 @@ dbVM
 
 ### Remove a docker machine
 ```
-PS C:\projects\aws\github\sqlserver> docker-machine rm sqldbVM -y -f
+C:\projects\aws\github\sqlserver> docker-machine rm sqldbVM -y -f
 About to remove sqldbVM
 WARNING: This action will delete both local reference and remote instance.
 Successfully removed sqldbVM
-PS C:\projects\aws\github\sqlserver> docker-machine ls
+C:\projects\aws\github\sqlserver> docker-machine ls
 NAME        ACTIVE   DRIVER   STATE     URL                        SWARM   DOCKER        ERRORS
 defaultVM   -        hyperv   Running   tcp://192.168.1.188:2376           v17.12.0-ce  
 ```
@@ -55,7 +55,7 @@ defaultVM   -        hyperv   Running   tcp://192.168.1.188:2376           v17.1
 
 ## Set environment for sqldbVM
 ```
-PS C:\projects\aws\github\sqlserver> docker-machine env sqldbVM
+C:\projects\aws\github\sqlserver> docker-machine env sqldbVM
 $Env:DOCKER_TLS_VERIFY = "1"
 $Env:DOCKER_HOST = "tcp://192.168.1.195:2376"
 $Env:DOCKER_CERT_PATH = "C:\Users\Michael\.docker\machine\machines\sqldbVM"
@@ -67,7 +67,7 @@ $Env:COMPOSE_CONVERT_WINDOWS_PATHS = "true"
 
 ### Docker inspect container
 ```
- PS C:\projects\aws\github\sqlserver> docker-machine inspect sqldbVM
+ C:\projects\aws\github\sqlserver> docker-machine inspect sqldbVM
 {
     "ConfigVersion": 3,
     "Driver": {
@@ -162,7 +162,7 @@ $Env:COMPOSE_CONVERT_WINDOWS_PATHS = "true"
 
 ### Execute environment setting command
 ```
- PS C:\projects\aws\github\sqlserver> & "C:\Program Files\Docker\Docker\Resources\bin\docker-machine.exe" env sqldbVM | Invoke-Expression
+ C:\projects\aws\github\sqlserver> & "C:\Program Files\Docker\Docker\Resources\bin\docker-machine.exe" env sqldbVM | Invoke-Expression
 ```
 
 ### Install sql server 2017 container
@@ -201,7 +201,6 @@ SELECT @@SERVERNAME,
     SERVERPROPERTY('MachineName'),
     SERVERPROPERTY('ServerName')
 ```
-[Docker SQLServer on Linux Quickstart](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker)
 
 ### Connect to sql server
 ```
@@ -254,7 +253,10 @@ TestDB
 (5 rows affected)
 ```
 
+## References
 
-##### [INSTALL AND CONFIGURE](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker)
+### [Docker SQLServer on Linux Quickstart](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker)
 
-##### [TROUBLESHOOTING](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-configure-docker#troubleshooting)
+### [INSTALL AND CONFIGURE](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker)
+
+### [TROUBLESHOOTING](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-configure-docker#troubleshooting)
