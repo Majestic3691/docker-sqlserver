@@ -10,6 +10,8 @@ Cores - 2 (2 GHz)
 Disk - 6 GB min
 Memory - 2GB min
 
+## Create docker machine
+
 #### Create new machine - format
 ```
 $ docker-machine create -d hyperv --hyperv-virtual-switch "Your LAN Virtual Switch" --hyperv-disk-size <mb> --hyperv-memory <mb> --hyperv-cpu-count 2 sqldbVM
@@ -65,7 +67,7 @@ $Env:COMPOSE_CONVERT_WINDOWS_PATHS = "true"
 & "C:\Program Files\Docker\Docker\Resources\bin\docker-machine.exe" env sqldbVM | Invoke-Expression
 ```
 
-### Docker inspect container
+### Docker inspect machine
 ```
  C:\projects\aws\github\sqlserver> docker-machine inspect sqldbVM
 {
@@ -142,6 +144,7 @@ $Env:COMPOSE_CONVERT_WINDOWS_PATHS = "true"
     "Name": "sqldbVM"
 }
 ```
+## Install & Configure SQLServer Container
 
 ### Container -connect to bash shell
 ```
